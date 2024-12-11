@@ -1,0 +1,35 @@
+
+
+f(x) = 1 / (1 + exp(-x))
+
+# Define parameters
+par DrFS = 0.2 
+par ExF=5 
+par ExS=5
+
+# Parameters of the PV neurons
+par W_PVF=-1.2
+par ExPV=2.5
+par DrPV=-0.25
+par W_SPV=1
+
+# Parameters of the CCK neurons
+par W_CCKS=-1.2
+par ExCCK=3 
+par DrCCK=-0.2 
+par W_FCCK=1
+
+PV'=f(ExPV*(W_SPV * S + DrPV))-PV
+FE'=f(ExF*(W_PVF * PV + DrFS)) - FE
+CCK'=f(ExCCK*(W_FCCK * FE + DrCCK))-CCK
+S'=f(ExS*(W_CCKS * CCK + DrFS)) - S
+
+# Define initial conditions
+init FE = 0.6
+init S = 0.7
+
+# Define time range
+@ total = 100
+@ xp=S,yp=FE,xlo=0,xhi=1,ylo=0,yhi=1
+
+done

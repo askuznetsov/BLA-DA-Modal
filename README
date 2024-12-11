@@ -1,0 +1,15 @@
+This is the code for the paper by Alexey Kuznetsov, Dopamine modulation of basolateral amygdala activity and function, J. Computational Neuroscience 2024
+
+FullSymmetricLowDrive.py: reproduces Fig. 2B - the impact of a dopamine increase on the activity of the BLA Fear and Safety neurons in the case of low inputs FullSymmetricHighDrive.py: reproduces Fig. 2B - the impact of a dopamine increase on the activity of the BLA Fear and Safety neurons in the case of high inputs PhaseSpaceLowDrive.py: reproduces Fig. 2C - phase space in the case of high inputs to the BLA corresponding to Fig. 2A PhaseSpaceHighDrive.py: reproduces Fig. 2D - phase space in the case of high inputs to the BLA corresponding to Fig. 2B
+
+LowDABLA.xpp: an XPPAUTO file that was used to calculate the bifurcation diagram in Fig. 3A i.e. at high dopamine HighDABLA.xpp: an XPPAUTO file that was used to calculate the bifurcation diagram in Fig. 3B i.e. at high dopamine PhaseSpaceBistability.py: reproduces Fig. 3C - phase space in the case of moderate DA levels, at which the system is bistable.
+
+DiffAllToAllTrans.py: reproduces Fig. 4 - impact of stimuli on the system in the differentiated state, which corresponds to a moderately-high DA level.
+
+NonDiffAllToAllTrans.py: reproduces Fig. 5 - the impact of stimuli on the system in the non-differentiated state, which corresponds to a low DA level.
+
+transition-statistics.py: reproduces Fig. 6 - statistics of the transitions to Fear or Safety states depending on the amplitude of the offset that determines the stimulus polarity TransStat.py: additional file used in transition-statistics.py
+
+AsymmetricLowDrive.py: reproduces Supplementary Fig. SI 3A or B depending on the parameters (see comments inside)
+
+PopulationAllToAll.py: reproduces Supplemental Fig. SI 4 - dynamics of a network model in response to stimulation protocol identical to Fig. 5
