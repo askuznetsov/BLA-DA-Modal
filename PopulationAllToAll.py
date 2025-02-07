@@ -37,7 +37,7 @@ class RandomNeuralPopulationModel:
         self.ExcE = 7.0  # Low excitability at low DA
         self.tauE = 3.0
         self.tauI = 1.0  # tau for inhibitory neurons
-        self.noise_level = 0.8
+        self.noise_level = 2.6
         
         # Within-group connectivity matrices
         self.M_E1E1 = np.random.uniform(0.7, 1.3, (num_neurons_per_group, num_neurons_per_group))
@@ -59,10 +59,10 @@ class RandomNeuralPopulationModel:
         self.V_DS = np.random.uniform(0.95, 1.05, (num_neurons_per_group))
         self.V_DS[0] = 0.
         
-    def compute_neuron_derivative(self, neuron_value, external_input):
+    def compute_neuron_derivative(self, neuron_value, external_input, dt):
         """Compute derivative for a single neuron with noise."""
         derivative = (sigmoid(external_input) - neuron_value) + \
-                    self.noise_level * np.random.randn()
+                    self.noise_level * np.random.randn()*np.sqrt(dt)
         return derivative
 
     def simulate(self, t_max=5000, dt=0.1):
@@ -122,25 +122,25 @@ class RandomNeuralPopulationModel:
                 # I1 neurons - IS
                 I1_input = self.ExcI * (np.sum(self.W_E1I1 * self.M_E1I1[j] * E1)/self.num_neurons +
                                         np.sum(self.W_I1I1 * self.M_I1I1[j] * I1)/self.num_neurons + np.sum(self.W_I2I1 * self.M_I2I1[j] * I2)/self.num_neurons + self.DriveI1)
-                I1[j] += self.compute_neuron_derivative(I1[j], I1_input) * dt / self.tauI
+                I1[j] += self.compute_neuron_derivative(I1[j], I1_input, dt) * dt / self.tauI
 
 
                 # I2 neurons - IF
                 I2_input = self.ExcI * (np.sum(self.W_E2I2 * self.M_E2I2[j] * E2)/self.num_neurons +
                                         np.sum(self.W_I2I2 * self.M_I2I2[j] * I2)/self.num_neurons + np.sum(self.W_I1I2 * self.M_I1I2[j] * I1)/self.num_neurons + self.DriveI2)
-                I2[j] += self.compute_neuron_derivative(I2[j], I2_input) * dt / self.tauI
+                I2[j] += self.compute_neuron_derivative(I2[j], I2_input, dt) * dt / self.tauI
                 
                 # E2 neurons - Fear
                 E2_input = self.ExcE * (np.sum(self.W_E2E2 * self.M_E2E2[j] * E2)/self.num_neurons +
                                         np.sum(self.W_I1E2 * self.M_I1E2[j] * I1)/self.num_neurons + np.sum(self.W_I2E2 * self.M_I2E2[j] * I2)/self.num_neurons +
                                         self.DriveF)
-                E2[j] += self.compute_neuron_derivative(E2[j], E2_input) * dt / self.tauE
+                E2[j] += self.compute_neuron_derivative(E2[j], E2_input, dt) * dt / self.tauE
                 
                 # E1 neurons - Safety
                 E1_input = self.ExcE * (np.sum(self.W_E1E1 * self.M_E1E1[j] * E1)/self.num_neurons +
                                         np.sum(self.W_I2E1 * self.M_I2E1[j] * I2)/self.num_neurons + np.sum(self.W_I1E1 * self.M_I1E1[j] * I1)/self.num_neurons +
                                         self.DriveS*self.V_DS[j])
-                E1[j] += self.compute_neuron_derivative(E1[j], E1_input) * dt / self.tauE
+                E1[j] += self.compute_neuron_derivative(E1[j], E1_input, dt) * dt / self.tauE
 
             # Store average activities
             E1_avg[i] = np.mean(E1)

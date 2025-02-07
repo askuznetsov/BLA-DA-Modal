@@ -37,21 +37,21 @@ class NeuralModel:
         self.W_FIF = .9         # Weight of F to IF neurons
 
         # Noise level
-        self.noise_level = 0.05
+        self.noise_level = 0.16
 
-    def compute_derivatives(self, F, S, IS, IF, DrF, DrS):
+    def compute_derivatives(self, F, S, IS, IF, DrF, DrS, dt):
         """Compute derivatives for F, S, IS, and IF neurons."""
         # IS interneuron dynamics
-        dISdt = (sigmoid(self.ExIS * (self.W_SIS * S + self.W_IS * IS + self.W_IFIS * IF + self.DrIS)) - IS + self.noise_level * np.random.randn())
+        dISdt = (sigmoid(self.ExIS * (self.W_SIS * S + self.W_IS * IS + self.W_IFIS * IF + self.DrIS)) - IS + self.noise_level * np.random.randn()*np.sqrt(dt))
 
         # IF interneuron dynamics
-        dIFdt = (sigmoid(self.ExIF * (self.W_FIF * F + self.W_IF * IF + self.W_ISIF * IS + self.DrIF)) - IF + self.noise_level * np.random.randn())
+        dIFdt = (sigmoid(self.ExIF * (self.W_FIF * F + self.W_IF * IF + self.W_ISIF * IS + self.DrIF)) - IF + self.noise_level * np.random.randn()*np.sqrt(dt))
 
         # F neuron dynamics
-        dFdt = (sigmoid(self.ExF * (self.W_ISF * IS + self.W_FF * F + self.W_IFF * IF + DrF)) - F + self.noise_level * np.random.randn()) / self.TauSF
+        dFdt = (sigmoid(self.ExF * (self.W_ISF * IS + self.W_FF * F + self.W_IFF * IF + DrF)) - F + self.noise_level * np.random.randn()*np.sqrt(dt)) / self.TauSF
 
         # S neuron dynamics
-        dSdt = (sigmoid(self.ExS * (self.W_IFS * IF + self.W_SS * S + self.W_ISS * IS + DrS)) - S + self.noise_level * np.random.randn()) / self.TauSF
+        dSdt = (sigmoid(self.ExS * (self.W_IFS * IF + self.W_SS * S + self.W_ISS * IS + DrS)) - S + self.noise_level * np.random.randn()*np.sqrt(dt)) / self.TauSF
 
         return dFdt, dSdt, dISdt, dIFdt
 
@@ -92,7 +92,7 @@ class NeuralModel:
                 self.DrIS = -0.1
                 
             # Compute derivatives
-            dF, dS, dIS, dIF = self.compute_derivatives(F[i-1], S[i-1], IS[i-1], IF[i-1], DrF, DrS)
+            dF, dS, dIS, dIF = self.compute_derivatives(F[i-1], S[i-1], IS[i-1], IF[i-1], DrF, DrS, dt)
 
             # Update state variables
             F[i] = F[i-1] + dF * dt
